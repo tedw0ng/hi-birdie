@@ -52,6 +52,9 @@
             font-weight: bold;
             margin-top: 20px;
         }
+        .startover {
+            margin-top: 10px;
+        }
         .btn {
             margin: 5px;
         }
@@ -109,8 +112,14 @@
     <div class="spacer"></div>
     <div id="final-history"></div>
     <div id="report-this"></div>
+    <div id="startover" hidden>
+        <button id="startover-button" type="button" class="btn btn-sm btn-info" onclick="startOver()">Do again</button>
+    </div>
 </body>
 <script>
+    function startOver() {
+        location.reload();
+    }
 
     function encodeBinary(histList, extra) {
         if(extra !== null){
@@ -182,6 +191,8 @@
             var report_html = "Tell Ted this number: " + encodeBinary(obsHistory.map(function(i){return parseInt(i)}), Number(isPresent));
             $("#final-history").html(hist_html);
             $("#report-this").html(report_html);
+            $("#startover").prop("hidden", false);
+            $("#startover-button").prop("disabled", false);
         }
     }
 
