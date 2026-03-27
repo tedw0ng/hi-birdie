@@ -11,19 +11,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
-        body { margin: 10; padding: 0; }
-        html, body{ height: 100%  }
+        html {
+            height: 100%;
+            margin-top: 20px;
+        }
+        body div {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #title {
+            color: #02b5c2;
+            font-size: 50px;
+            font-weight: bold;
+            font-family: "Times New Roman", Times, serif;
+        }
         .img-thumbnail {
             height: 80px;
             width: 80px;
+        }
+        .thumbnail-present {
+            border: 1px solid green
+        }
+        .thumbnail-absent {
+            border: 1px solid #d00000
         }
         #counter {
             font-size: 30px;
             margin-right: 5px;
         }
         #final-history {
-            font-size: 30px;
-            font-weight: "bold"
+            font-size: 20px;
+            font-weight: "bold";
+            margin-top: 20px;
+        }
+        .btn {
+            margin: 5px;
         }
         .spacer {
             height: 2px;
@@ -36,6 +61,7 @@
     </script>
 </head>
 <body>
+    <div id="title">Hi, Birdie!</div>
     <div id="gallery">
         <table>
             <tr>
@@ -92,12 +118,12 @@
         for(var r=0; r<3; r++) {
             for (var c=0; c<3; c++) {
                 var excl = [];
-                if(Math.random() > PSI) {
+                if(! isPresent) {
                     excl.push(focalBirdPath);
                 }
                 var birdPath = randomBirdPath(excl);
                 var slotId = "slot_" + r.toString() + "_" + c.toString()
-                $("#" + slotId).html('<img src=\"' + birdPath + '\" class=\"img-thumbnail\">')
+                $("#" + slotId).html('<img src=\"' + birdPath + '\" class=\"img-thumbnail ' + thumbnailClass + '\">')
             }
         }
         $(".obs-result").prop("disabled", false);
@@ -106,13 +132,8 @@
     function removeGallery() {
         for(var r=0; r<3; r++) {
             for (var c=0; c<3; c++) {
-                var excl = [];
-                if(isPresent) {
-                    excl.push(focalBirdPath);
-                }
-                var birdPath = randomBirdPath(excl);
                 var slotId = "slot_" + r.toString() + "_" + c.toString()
-                $("#" + slotId).html('<img src=\"qm.png\" class=\"img-thumbnail\">')
+                $("#" + slotId).html('<img src=\"qm.png\" class=\"img-thumbnail ' + thumbnailClass + '\">')
             }
         }
     }
@@ -134,7 +155,8 @@
             $("#counter").html(count.toString() + "/" + MAXCOUNT.toString())
         } else {
             $(".btn").prop("disabled", true);
-            var hist_html = obsHistory[0];
+            var hist_html = "Report this history:<br /><br />"
+            hist_html += obsHistory[0];
             for(var i=1; i<obsHistory.length; i++) {
                 hist_html += ", " + obsHistory[i];
             }
@@ -145,6 +167,11 @@
     const PSI = 0.7;
     var isPresent = Math.random() < PSI;
     const SEARCHTIME = 2000;
+
+    var thumbnailClass = "thumbnail-absent";
+    if(isPresent) {
+        thumbnailClass = "thumbnail-present"
+    }
     
     var focalBirdPath = randomBirdPath([]);
     $("#counter").html(count.toString() + "/" + MAXCOUNT.toString())
@@ -152,15 +179,11 @@
     for(var r=0; r<3; r++) {
         for (var c=0; c<3; c++) {
             var slotId = "slot_" + r.toString() + "_" + c.toString()
-            $("#" + slotId).html('<img src=\"qm.png\" class=\"img-thumbnail\">')
+            $("#" + slotId).html('<img src=\"qm.png\" class=\"img-thumbnail ' + thumbnailClass + '\">')
         }
     }
 
-    $("#focal_bird_img").html('<img src=\"' + focalBirdPath + '\" class=\"img-thumbnail focal_bird_img\">');
-    if(isPresent) {
-        $(".img-thumbnail").css("border", "1px solid green")
-    } else {
-        $(".img-thumbnail").css("border", "1px solid #d00000")
-    }
+    $("#focal_bird_img").html('<img src=\"' + focalBirdPath + '\" class=\"img-thumbnail ' + thumbnailClass + '\">');
+    
 </script>
 </html>
