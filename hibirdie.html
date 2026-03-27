@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Hi Birdie</title>
+    <meta property="og:description" content="Simulate species detection." />
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <script src="jquery.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body { margin: 10; padding: 0; }
+        html, body{ height: 100%  }
+        .img-thumbnail {
+            height: 80px;
+            width: 80px;
+        }
+        #counter {
+            font-size: 30px;
+            margin-right: 5px;
+        }
+        #final-history {
+            font-size: 30px;
+            font-weight: "bold"
+        }
+        .spacer {
+            height: 2px;
+        }
+    </style>
+    <script>
+        var obsHistory = [];
+        var count = 1;
+        const MAXCOUNT = 10;
+    </script>
+</head>
+<body>
+    <div id="gallery">
+        <table>
+            <tr>
+                <td class="bird_img" id="slot_0_0"></td>
+                <td class="bird_img" id="slot_0_1"></td>
+                <td class="bird_img" id="slot_0_2"></td>
+            </tr>
+            <tr>
+                <td class="bird_img" id="slot_1_0"></td>
+                <td class="bird_img" id="slot_1_1"></td>
+                <td class="bird_img" id="slot_1_2"></td>
+            </tr>
+            <tr>
+                <td class="bird_img" id="slot_2_0"></td>
+                <td class="bird_img" id="slot_2_1"></td>
+                <td class="bird_img" id="slot_2_2"></td>
+            </tr>
+            <tr>
+                <td class="bird_img" id="slot_3_0"></td>
+                <td class="bird_img" id="slot_3_1"></td>
+                <td class="bird_img" id="slot_3_2"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="spacer"></div>
+    <div class="container" id="info_panel">
+        <span id="counter"></span>
+        Look for this:
+        <span id="focal_bird_img"></span>
+        <button type="button" id="go_button" class="btn btn-info" onclick="go()">GO</button>
+    </div>
+    <div class="spacer"></div>
+    <div>
+        <button type="button" class="btn btn-secondary obs-result" onclick="respond(0)" disabled>Nope</button>
+        <button type="button" class="btn btn-success obs-result" onclick="respond(1)" disabled>Saw it</button>
+    </div>
+    <div class="spacer"></div>
+    <div class="spacer"></div>
+    <div id="final-history"></div>
+</body>
+<script>
+
+    function randomBirdPath(excluded) {
+        var randint = Math.floor(((Math.random() * 10) + 1));
+        var candidate = "bird_" + randint.toString() + ".png";
+        while (excluded.indexOf(candidate) != -1) {
+            randint = Math.floor(((Math.random() * 10) + 1));
+            candidate = "bird_" + randint.toString() + ".png";
+        }
+        return candidate
+    }
+
+    function populateGallery() {
+        for(var r=0; r<3; r++) {
+            for (var c=0; c<3; c++) {
+                var excl = [];
+                if(Math.random() > PSI) {
+                    excl.push(focalBirdPath);
+                }
+                var birdPath = randomBirdPath(excl);
+                var slotId = "slot_" + r.toString() + "_" + c.toString()
+                $("#" + slotId).html('<img src=\"' + birdPath + '\" class=\"img-thumbnail\">')
+            }
+        }
+        $(".obs-result").prop("disabled", false);
+    }
+
+    function removeGallery() {
+        for(var r=0; r<3; r++) {
+            for (var c=0; c<3; c++) {
+                var excl = [];
+                if(isPresent) {
+                    excl.push(focalBirdPath);
+                }
+                var birdPath = randomBirdPath(excl);
+                var slotId = "slot_" + r.toString() + "_" + c.toString()
+                $("#" + slotId).html('<img src=\"qm.png\" class=\"img-thumbnail\">')
+            }
+        }
+    }
+
+    function go() {
+        populateGallery();
+        $("#go_button").prop("disabled", true);
+        setTimeout(() => {
+            removeGallery();
+        }, SEARCHTIME);
+    }
+
+    function respond(resp) {
+        obsHistory.push(resp.toString());
+        count++;
+        if(count <= MAXCOUNT) {
+            $(".obs-result").prop("disabled", true);
+            $("#go_button").prop("disabled", false);
+            $("#counter").html(count.toString() + "/" + MAXCOUNT.toString())
+        } else {
+            $(".btn").prop("disabled", true);
+            var hist_html = obsHistory[0];
+            for(var i=1; i<obsHistory.length; i++) {
+                hist_html += ", " + obsHistory[i];
+            }
+            $("#final-history").html(hist_html);
+        }
+    }
+
+    const PSI = 0.7;
+    var isPresent = Math.random() < PSI;
+    const SEARCHTIME = 2000;
+    
+    var focalBirdPath = randomBirdPath([]);
+    $("#counter").html(count.toString() + "/" + MAXCOUNT.toString())
+    
+    for(var r=0; r<3; r++) {
+        for (var c=0; c<3; c++) {
+            var slotId = "slot_" + r.toString() + "_" + c.toString()
+            $("#" + slotId).html('<img src=\"qm.png\" class=\"img-thumbnail\">')
+        }
+    }
+
+    $("#focal_bird_img").html('<img src=\"' + focalBirdPath + '\" class=\"img-thumbnail focal_bird_img\">');
+    if(isPresent) {
+        $(".img-thumbnail").css("border", "1px solid green")
+    } else {
+        $(".img-thumbnail").css("border", "1px solid #d00000")
+    }
+</script>
+</html>
