@@ -47,6 +47,7 @@
             margin-top: 20px;
         }
         #report-this {
+            margin-top: 10px;
             font-size: 20px;
             font-weight: bold;
             margin-top: 20px;
@@ -112,11 +113,10 @@
 <script>
 
     function encodeBinary(histList, extra) {
-        console.log(histList);
         if(extra !== null){
             histList.push(extra);
         }
-        console.log(histList);
+        histList.reverse();
         var result = histList.reduce(function(prev, i, idx){
             return prev + Math.pow(2, idx) * i
         }, 0)
@@ -174,7 +174,7 @@
             $("#counter").html(count.toString() + "/" + MAXCOUNT.toString())
         } else {
             $(".btn").prop("disabled", true);
-            var hist_html = "Your observation history:<br /><br />"
+            var hist_html = "Your observation history: "
             hist_html += obsHistory[0];
             for(var i=1; i<obsHistory.length; i++) {
                 hist_html += ", " + obsHistory[i];
